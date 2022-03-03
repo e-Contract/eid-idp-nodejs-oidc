@@ -1,0 +1,24 @@
+html
+  head
+    title OpenID Connect results
+  body
+    h1 OpenID Connect results
+    table(border='1')
+      tr
+        th Subject
+        td= userinfo.sub
+      tr
+        th Name
+        td= userinfo.name
+      tr
+        th Street Address
+        td= userinfo.address.street_address
+      tr
+        th Locality
+        td= userinfo.address.locality
+      tr
+        th Postal Code
+        td= userinfo.address.postal_code
+    br
+    form(action='./')
+        input(type='submit', value='Back')
