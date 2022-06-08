@@ -6,6 +6,7 @@
         "name": "Frank Cornelis",
         "email": "info@e-contract.be"
     },
+    "type": "module",
     "dependencies": {
         "ansi": "0.3.1",
         "body-parser": "1.20.0",

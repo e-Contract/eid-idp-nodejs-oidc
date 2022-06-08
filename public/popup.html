@@ -1,0 +1,43 @@
+<html>
+
+<head>
+    <title>Pop-up Example OpenID Connect for NodeJS</title>
+</head>
+
+<body>
+    <h1>Pop-up Example OpenID Connect for NodeJS</h1>
+    <script type="text/javascript">
+        function popupDone(event) {
+            if (event.source !== this.popupWindow) {
+                console.log("received message not from popup")
+                return;
+            }
+            if (event.data === "done") {
+                this.popupWindow.close();
+                this.popupWindow = null;
+                window.location.href = "popup-result";
+            }
+        }
+        function openPopup() {
+            document.getElementById("button").style.visibility = "hidden";
+            document.getElementById("message").innerHTML = "Processing...";
+            window.addEventListener("message", popupDone, false);
+            this.popupWindow = window.open("authenticate-popup", "IdentityProviderWindow", "width=800,height=600");
+        }
+        function pingPopup() {
+            if (typeof this.popupWindow === "undefined") {
+                return;
+            }
+            if (null === this.popupWindow) {
+                return;
+            }
+            // give the popup a handle towards the parent
+            this.popupWindow.postMessage("ping", "*");
+        }
+        setInterval(pingPopup, 500);
+    </script>
+    <button id="button" onclick="openPopup();">eID readout via pop-up</button>
+    <div id="message"></div>
+</body>
+
+</html>

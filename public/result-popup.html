@@ -1,0 +1,23 @@
+<html>
+
+<head>
+    <title>Example OpenID Connect for NodeJS</title>
+</head>
+
+<body>
+    <h1>Example OpenID Connect for NodeJS</h1>
+    <script type="text/javascript">
+        function onMessage(event) {
+            console.log("onMessage");
+            window.removeEventListener("message", onMessage, true);
+            // for firefox, we backfire on the ping event
+            event.source.postMessage("done", event.origin);
+        }
+        window.addEventListener("message", onMessage, true);
+
+        // next works in chrome, not firefox
+        window.opener.postMessage("done", '*');
+    </script>
+</body>
+
+</html>
