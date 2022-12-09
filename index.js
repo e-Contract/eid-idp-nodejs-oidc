@@ -124,6 +124,7 @@ function processAuthenticationPopup(req, res) {
     state: req.session.state,
     nonce: req.session.nonce
   };
+  Client[custom.clock_tolerance] = 5;
   Client.callback("http://localhost:" + PORT + "/landing-popup", params, checks)
     .then(tokenSet => {
       console.log("received and validated tokens %j", tokenSet);
