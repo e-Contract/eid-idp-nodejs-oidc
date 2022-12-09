@@ -12,7 +12,7 @@ let cursor = ansi(process.stdout);
 import express from 'express';
 let app = express();
 import bodyParser from 'body-parser';
-import { Issuer } from 'openid-client';
+import { Issuer, custom } from 'openid-client';
 import { v4 as uuidv4 } from 'uuid';
 import path from 'path';
 const __filename = fileURLToPath(import.meta.url);
@@ -103,6 +103,7 @@ function processAuthentication(req, res) {
     state: req.session.state,
     nonce: req.session.nonce
   };
+  Client[custom.clock_tolerance] = 5;
   Client.callback("http://localhost:" + PORT + "/landing", params, checks)
     .then(tokenSet => {
       console.log("received and validated tokens %j", tokenSet);

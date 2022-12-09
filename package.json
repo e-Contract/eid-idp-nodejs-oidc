@@ -9,12 +9,12 @@
     "type": "module",
     "dependencies": {
         "ansi": "0.3.1",
-        "body-parser": "1.20.0",
-        "express": "4.18.1",
-        "express-session": "1.17.2",
-        "openid-client": "5.1.6",
+        "body-parser": "1.20.1",
+        "express": "4.18.2",
+        "express-session": "1.17.3",
+        "openid-client": "5.3.1",
         "pug": "3.0.2",
-        "uuid": "8.3.2"
+        "uuid": "9.0.0"
     },
     "scripts": {
         "start": "node index.js"
