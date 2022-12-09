@@ -7,14 +7,14 @@
 
 "use strict";
 
-import ansi from 'ansi';
+import ansi from "ansi";
 let cursor = ansi(process.stdout);
-import express from 'express';
+import express from "express";
 let app = express();
-import bodyParser from 'body-parser';
-import { Issuer, custom } from 'openid-client';
-import { v4 as uuidv4 } from 'uuid';
-import path from 'path';
+import bodyParser from "body-parser";
+import { Issuer, custom } from "openid-client";
+import { v4 as uuidv4 } from "uuid";
+import path from "path";
 const __filename = fileURLToPath(import.meta.url);
 import { fileURLToPath } from 'url';
 const __dirname = path.dirname(__filename);
@@ -23,15 +23,15 @@ const PORT = 3000;
 
 app.use(bodyParser.urlencoded({ extended: false }));
 
-import session from 'express-session';
+import session from "express-session";
 app.use(session({
-  secret: 'mySecretKey',
+  secret: "mySecretKey",
   resave: false,
   saveUninitialized: true
 }));
 
-app.set('views', __dirname + '/views');
-app.set('view engine', 'pug');
+app.set("views", __dirname + "/views");
+app.set("view engine", "pug");
 
 app.use(express.static(__dirname + "/public"));
 
@@ -46,13 +46,13 @@ app.get("/authenticate", function (req, res) {
       })
         .then(client => {
           console.log("client id: " + client.client_id);
-          Client = client;
+          oidcClient = client;
           let state = uuidv4();
           req.session.state = state;
           let nonce = uuidv4();
           req.session.nonce = nonce;
           console.log("state: " + state);
-          res.redirect(Client.authorizationUrl({
+          res.redirect(oidcClient.authorizationUrl({
             redirect_uri: "http://localhost:3000/landing",
             state: state,
             nonce: nonce,
@@ -77,13 +77,13 @@ app.get("/authenticate-popup", function (req, res) {
       })
         .then(client => {
           console.log("client id: " + client.client_id);
-          Client = client;
+          oidcClient = client;
           let state = uuidv4();
           req.session.state = state;
           let nonce = uuidv4();
           req.session.nonce = nonce;
           console.log("state: " + state);
-          res.redirect(Client.authorizationUrl({
+          res.redirect(oidcClient.authorizationUrl({
             redirect_uri: "http://localhost:3000/landing-popup",
             state: state,
             nonce: nonce,
@@ -98,16 +98,16 @@ app.get("/authenticate-popup", function (req, res) {
 });
 
 function processAuthentication(req, res) {
-  let params = Client.callbackParams(req);
+  let params = oidcClient.callbackParams(req);
   let checks = {
     state: req.session.state,
     nonce: req.session.nonce
   };
-  Client[custom.clock_tolerance] = 5;
-  Client.callback("http://localhost:" + PORT + "/landing", params, checks)
+  oidcClient[custom.clock_tolerance] = 5;
+  oidcClient.callback("http://localhost:" + PORT + "/landing", params, checks)
     .then(tokenSet => {
       console.log("received and validated tokens %j", tokenSet);
-      Client.userinfo(tokenSet.access_token)
+      oidcClient.userinfo(tokenSet.access_token)
         .then(userinfo => {
           console.log("userinfo %j", userinfo);
           res.render("result", {
@@ -119,22 +119,21 @@ function processAuthentication(req, res) {
 app.get("/landing", processAuthentication);
 
 function processAuthenticationPopup(req, res) {
-  let params = Client.callbackParams(req);
+  let params = oidcClient.callbackParams(req);
   let checks = {
     state: req.session.state,
     nonce: req.session.nonce
   };
-  Client[custom.clock_tolerance] = 5;
-  Client.callback("http://localhost:" + PORT + "/landing-popup", params, checks)
+  oidcClient[custom.clock_tolerance] = 5;
+  oidcClient.callback("http://localhost:" + PORT + "/landing-popup", params, checks)
     .then(tokenSet => {
       console.log("received and validated tokens %j", tokenSet);
-      Client.userinfo(tokenSet.access_token)
+      oidcClient.userinfo(tokenSet.access_token)
         .then(userinfo => {
           console.log("userinfo %j", userinfo);
           req.session.userinfo = userinfo;
           res.redirect("result-popup.html");
         });
-
     });
 }
 app.get("/landing-popup", processAuthenticationPopup);
@@ -145,7 +144,7 @@ app.get("/popup-result", function (req, res) {
   });
 });
 
-let Client;
+let oidcClient;
 
 let server = app.listen(PORT, function () {
   let host = server.address().address;
