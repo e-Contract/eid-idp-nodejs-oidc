@@ -1,7 +1,7 @@
 /*
  * OpenID Connect project.
  *
- * Copyright 2017-2022 e-Contract.be BV. All rights reserved.
+ * Copyright 2017-2023 e-Contract.be BV. All rights reserved.
  * e-Contract.be BV proprietary/confidential. Use is subject to license terms.
  */
 
@@ -153,7 +153,7 @@ let server = app.listen(PORT, function () {
   cursor.bold();
   cursor.write("Example eID Identity Provifer OpenID Connect NodeJS application listening at http://" + host + ":" + port + "\n");
   cursor.fg.red();
-  cursor.write("Copyright (C) 2017-2022 e-Contract.BV\n");
+  cursor.write("Copyright (C) 2017-2023 e-Contract.BV\n");
   cursor.fg.reset();
   cursor.write("\n");
 });
