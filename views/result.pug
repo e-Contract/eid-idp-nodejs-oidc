@@ -58,6 +58,10 @@ html
       tr
         th Postal Code
         td= userinfo.address.postal_code
+      tr
+        th Photo
+        td
+          img(src="data:image/jpg;base64," + userinfo.photo)
     br
     form(action='./')
         input(type='submit', value='Back')

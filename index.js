@@ -1,7 +1,7 @@
 /*
  * OpenID Connect project.
  *
- * Copyright 2017-2023 e-Contract.be BV. All rights reserved.
+ * Copyright 2017-2024 e-Contract.be BV. All rights reserved.
  * e-Contract.be BV proprietary/confidential. Use is subject to license terms.
  */
 
@@ -12,7 +12,7 @@ let cursor = ansi(process.stdout);
 import express from "express";
 let app = express();
 import bodyParser from "body-parser";
-import { Issuer, custom } from "openid-client";
+import { Issuer, custom, generators } from "openid-client";
 import { v4 as uuidv4 } from "uuid";
 import path from "path";
 const __filename = fileURLToPath(import.meta.url);
@@ -52,11 +52,17 @@ app.get("/authenticate", function (req, res) {
           let nonce = uuidv4();
           req.session.nonce = nonce;
           console.log("state: " + state);
+          const code_verifier = generators.codeVerifier();
+          req.session.code_verifier = code_verifier;
+          const code_challenge = generators.codeChallenge(code_verifier);
+          req.session.expected_acr = "urn:be:e-contract:idp:oidc:acr:auth";
           res.redirect(oidcClient.authorizationUrl({
             redirect_uri: "http://localhost:3000/landing",
             state: state,
             nonce: nonce,
-            scope: "openid profile address"
+            scope: "openid profile address photo",
+            code_challenge: code_challenge,
+            code_challenge_method: 'S256',
           }));
         })
         .catch(error => {
@@ -83,11 +89,17 @@ app.get("/authenticate-popup", function (req, res) {
           let nonce = uuidv4();
           req.session.nonce = nonce;
           console.log("state: " + state);
+          const code_verifier = generators.codeVerifier();
+          req.session.code_verifier = code_verifier;
+          const code_challenge = generators.codeChallenge(code_verifier);
+          req.session.expected_acr = "urn:be:e-contract:idp:oidc:acr:ident";
           res.redirect(oidcClient.authorizationUrl({
             redirect_uri: "http://localhost:3000/landing-popup",
             state: state,
             nonce: nonce,
-            scope: "openid profile address"
+            scope: "openid profile address photo",
+            code_challenge: code_challenge,
+            code_challenge_method: 'S256',
           }));
         })
         .catch(error => {
@@ -101,7 +113,8 @@ function processAuthentication(req, res) {
   let params = oidcClient.callbackParams(req);
   let checks = {
     state: req.session.state,
-    nonce: req.session.nonce
+    nonce: req.session.nonce,
+    code_verifier: req.session.code_verifier
   };
   oidcClient[custom.clock_tolerance] = 5;
   oidcClient.callback("http://localhost:" + PORT + "/landing", params, checks)
@@ -109,6 +122,9 @@ function processAuthentication(req, res) {
       console.log("received and validated tokens %j", tokenSet);
       oidcClient.userinfo(tokenSet.access_token)
         .then(userinfo => {
+          if (req.session.expected_acr !== userinfo.acr) {
+            throw new Error("incorrect ACR");
+          }
           console.log("userinfo %j", userinfo);
           res.render("result", {
             userinfo: userinfo
@@ -122,7 +138,8 @@ function processAuthenticationPopup(req, res) {
   let params = oidcClient.callbackParams(req);
   let checks = {
     state: req.session.state,
-    nonce: req.session.nonce
+    nonce: req.session.nonce,
+    code_verifier: req.session.code_verifier
   };
   oidcClient[custom.clock_tolerance] = 5;
   oidcClient.callback("http://localhost:" + PORT + "/landing-popup", params, checks)
@@ -130,6 +147,9 @@ function processAuthenticationPopup(req, res) {
       console.log("received and validated tokens %j", tokenSet);
       oidcClient.userinfo(tokenSet.access_token)
         .then(userinfo => {
+          if (req.session.expected_acr !== userinfo.acr) {
+            throw new Error("incorrect ACR");
+          }
           console.log("userinfo %j", userinfo);
           req.session.userinfo = userinfo;
           res.redirect("result-popup.html");
@@ -153,7 +173,7 @@ let server = app.listen(PORT, function () {
   cursor.bold();
   cursor.write("Example eID Identity Provifer OpenID Connect NodeJS application listening at http://" + host + ":" + port + "\n");
   cursor.fg.red();
-  cursor.write("Copyright (C) 2017-2023 e-Contract.BV\n");
+  cursor.write("Copyright (C) 2017-2024 e-Contract.BV\n");
   cursor.fg.reset();
   cursor.write("\n");
 });
