@@ -1,6 +1,6 @@
 {
     "name": "eid-idp-nodejs-oidc",
-    "version": "1.0.0",
+    "version": "2.0.0",
     "description": "NodeJS OpenID Connect example for eID Identity Provider",
     "author": {
         "name": "Frank Cornelis",
@@ -9,12 +9,11 @@
     "type": "module",
     "dependencies": {
         "ansi": "0.3.1",
-        "body-parser": "1.20.2",
-        "express": "4.19.2",
-        "express-session": "1.18.0",
-        "openid-client": "5.6.5",
-        "pug": "3.0.2",
-        "uuid": "9.0.1"
+        "body-parser": "2.2.0",
+        "express": "5.1.0",
+        "express-session": "1.18.1",
+        "oauth4webapi": "3.4.0",
+        "pug": "^3.0.3"
     },
     "scripts": {
         "start": "node index.js"
