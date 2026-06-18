@@ -1,7 +1,7 @@
 /*
  * OpenID Connect project.
  *
- * Copyright 2017-2025 e-Contract.be BV. All rights reserved.
+ * Copyright 2017-2026 e-Contract.be BV. All rights reserved.
  * e-Contract.be BV proprietary/confidential. Use is subject to license terms.
  */
 
@@ -62,7 +62,7 @@ app.get("/authenticate", async function (request, response) {
   authorizationUrl.searchParams.set("code_challenge_method", "S256");
   authorizationUrl.searchParams.set("state", request.session.state);
   authorizationUrl.searchParams.set("nonce", request.session.nonce);
-  response.redirect(authorizationUrl);
+  response.redirect(authorizationUrl.toString());
 });
 
 app.get("/authenticate-popup", async function (request, response) {
@@ -92,7 +92,7 @@ app.get("/authenticate-popup", async function (request, response) {
   authorizationUrl.searchParams.set("code_challenge_method", "S256");
   authorizationUrl.searchParams.set("state", request.session.state);
   authorizationUrl.searchParams.set("nonce", request.session.nonce);
-  response.redirect(authorizationUrl);
+  response.redirect(authorizationUrl.toString());
 });
 
 function processAuthentication(request, response) {
@@ -201,7 +201,7 @@ let server = app.listen(PORT, function () {
   cursor.bold();
   cursor.write("Example eID Identity Provider OpenID Connect NodeJS application listening at http://" + host + ":" + port + "\n");
   cursor.fg.red();
-  cursor.write("Copyright (C) 2017-2025 e-Contract.BV\n");
+  cursor.write("Copyright (C) 2017-2026 e-Contract.BV\n");
   cursor.fg.reset();
   cursor.write("\n");
 });

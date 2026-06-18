@@ -6,12 +6,12 @@ More information is available at:
 https://www.e-contract.be/developers/webapp/idp/oidc
 
 Install all dependencies via:
-```
+```bash
 npm install
 ```
 
 Run the demo web application via:
-```
+```bash
 npm start
 ```
 

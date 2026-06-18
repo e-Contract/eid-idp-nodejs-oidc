@@ -9,11 +9,11 @@
     "type": "module",
     "dependencies": {
         "ansi": "0.3.1",
-        "body-parser": "2.2.0",
-        "express": "5.1.0",
-        "express-session": "1.18.1",
-        "oauth4webapi": "3.4.0",
-        "pug": "^3.0.3"
+        "body-parser": "2.3.0",
+        "express": "5.2.1",
+        "express-session": "1.19.0",
+        "oauth4webapi": "3.8.6",
+        "pug": "3.0.4"
     },
     "scripts": {
         "start": "node index.js"
